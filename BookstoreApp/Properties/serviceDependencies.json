@@ -1,0 +1,20 @@
+{
+  "dependencies": {
+    "mssql1": {
+      "type": "mssql",
+      "connectionId": "ConnectionStrings:MVCAuthorContext"
+    },
+    "mssql3": {
+      "type": "mssql",
+      "connectionId": "ConnectionStrings:GendreContext"
+    },
+    "mssql4": {
+      "type": "mssql",
+      "connectionId": "ConnectionStrings:BookContext"
+    },
+    "mssql5": {
+      "type": "mssql",
+      "connectionId": "ConnectionStrings:ReviewContext"
+    }
+  }
+}
