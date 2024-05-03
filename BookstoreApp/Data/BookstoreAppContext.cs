@@ -19,5 +19,6 @@ namespace BookstoreApp.Models
         public DbSet<BookstoreApp.Models.Review> Review { get; set; } = default!;
         public DbSet<BookstoreApp.Models.Genre> Genre { get; set; } = default!;
         public DbSet<BookstoreApp.Models.UserBooks> UserBooks { get; set; } = default!;
+        public DbSet<BookstoreApp.Models.BookGenre> BookGenre { get; set; } = default!;
     }
 }
