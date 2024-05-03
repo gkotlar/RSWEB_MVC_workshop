@@ -14,9 +14,9 @@ namespace BookstoreApp.Models
         [Display(Name = "Book ID")]
         public int BookId { get; set; }
 
-        [Display(Name = "Gendre ID")]
+        [Display(Name = "Genre ID")]
 
-        public int GendreId { get; set; }
+        public int GenreId { get; set; }
 
         public Book? Book { get; set; }
 
