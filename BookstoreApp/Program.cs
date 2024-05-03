@@ -1,6 +1,3 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using BookstoreApp.Models;
 namespace BookstoreApp
 {
     public class Program
@@ -8,8 +5,6 @@ namespace BookstoreApp
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-            builder.Services.AddDbContext<BookstoreAppContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("BookstoreAppContext") ?? throw new InvalidOperationException("Connection string 'BookstoreAppContext' not found.")));
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
