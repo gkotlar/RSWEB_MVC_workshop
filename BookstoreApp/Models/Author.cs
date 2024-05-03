@@ -23,11 +23,9 @@ namespace BookstoreApp.Models
         [Display(Name = "Birth Date")]
         public DateTime? BirthDate { get; set; }
 
-        [Required]
         [StringLength(50)]
         public string? Nationality { get; set; }
 
-        [Required]
         [StringLength(50)]
         public string? Gender { get; set; }
 

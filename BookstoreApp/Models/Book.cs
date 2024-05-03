@@ -14,25 +14,23 @@ namespace BookstoreApp.Models
         [StringLength(100)]
         public string Title { get; set; }
 
-        [Required]
         [Display(Name = "Year Published")]
         public int? YearPublished { get; set; }
 
-        [Required]
         [Display(Name = "Number of Pages")]
         public int? NumPages { get; set; }
 
-        [Required]
+        public string? Description { get; set; }
+
         [StringLength(50)]
         public string? Publisher { get; set; }
 
 
         [Display(Name = "Front Page")]
-        public int? FrontPage { get; set; }
+        public string? FrontPage { get; set; }
 
-        [Required]
         [Display(Name = "Download Url")]
-        public int? DownloadUrl { get; set; }
+        public string? DownloadUrl { get; set; }
 
         [Required]
         [Display (Name ="Author Id")]

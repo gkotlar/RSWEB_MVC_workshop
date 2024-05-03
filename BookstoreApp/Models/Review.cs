@@ -12,6 +12,7 @@ namespace BookstoreApp.Models
 
         [Required]
         [StringLength(450)]
+        [Display(Name = "Application User")]
         public string AppUser { get; set; }
 
         [Required]

@@ -13,6 +13,8 @@ namespace BookstoreApp.Models
 
         [Required]
         [StringLength(50)]
-        public string GendreName { get; set; }
+        [Display(Name = "Genre Name")]
+
+        public string GenreName { get; set; }
     }
 }
