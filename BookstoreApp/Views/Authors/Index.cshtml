@@ -1,4 +1,4 @@
-﻿@model IEnumerable<BookstoreApp.Models.Author>
+﻿@model BookstoreApp.ViewModels.AuthorFirstLastNameViewModel
 
 @{
     ViewData["Title"] = "Index";
@@ -9,29 +9,42 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+
+
+<form aso-asp-controller="Authors" asp-action="Index" method="get">
+    <p>
+        First Name: <input type="text" asp-for="SearchStringFName" />
+        Last Name: <input type="text" asp-for="SearchStringLName" />
+
+        <input type="submit" value="Filter" />
+    </p>
+</form>
+
+
+
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.FirstName)
+                @Html.DisplayNameFor(model => model.Authors[0].FirstName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.LastName)
+                @Html.DisplayNameFor(model => model.Authors[0].LastName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.BirthDate)
+                @Html.DisplayNameFor(model => model.Authors[0].BirthDate)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Nationality)
+                @Html.DisplayNameFor(model => model.Authors[0].Nationality)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Gender)
+                @Html.DisplayNameFor(model => model.Authors[0].Gender)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (var item in Model.Authors) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.FirstName)

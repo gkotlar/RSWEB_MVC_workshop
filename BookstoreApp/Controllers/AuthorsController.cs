@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BookstoreApp.Models;
+using BookstoreApp.ViewModels;
 
 namespace BookstoreApp.Controllers
 {
@@ -19,9 +20,33 @@ namespace BookstoreApp.Controllers
         }
 
         // GET: Authors
-        public async Task<IActionResult> Index()
-        {
-            return View(await _context.Author.ToListAsync());
+        public async Task<IActionResult> Index(string searchStringFName, string searchStringLName)
+        { 
+        IQueryable<Author> authors = _context.Author.AsQueryable();
+
+            if (!string.IsNullOrEmpty(searchStringFName))
+            {
+                authors = authors.Where(s => s.FirstName.Contains(searchStringFName));
+            }
+            if (!string.IsNullOrEmpty(searchStringLName))
+            {
+                authors = authors.Where(s => s.LastName.Contains(searchStringLName));
+            }
+            /* // code if you want to list the books in the Index view of Authors
+            var books = _context.Book.AsEnumerable();
+            books = books.OrderBy(b => b.YearPublished);
+
+
+            authors = authors.Include(a => a.Books);
+
+            */
+            var AuthorFirstLastNameVM = new AuthorFirstLastNameViewModel
+            {
+                //Books = new List<Book>(books), //part of the upper code
+                Authors = await authors.ToListAsync(),
+            };
+
+            return View(AuthorFirstLastNameVM);
         }
 
         // GET: Authors/Details/5
@@ -33,6 +58,7 @@ namespace BookstoreApp.Controllers
             }
 
             var author = await _context.Author
+                .Include(a => a.Books)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (author == null)
             {
