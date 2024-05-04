@@ -27,32 +27,24 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Books[0].Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Books[0].YearPublished)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Books[0].NumPages)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Books[0].Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Books[0].Publisher)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.Books[0].FrontPage)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Books[0].DownloadUrl)
+                @Html.DisplayNameFor(model => model.Books[0].Title)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Books[0].Authors)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.Books[0].YearPublished)
+            </th>     
+            <th>
                 @Html.DisplayNameFor(model => model.Books[0].bookGenres)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Books[0].Reviews)
+            </th>
+
             <th></th>
         </tr>
     </thead>
@@ -60,26 +52,12 @@
 @foreach (var item in Model.Books) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.YearPublished)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NumPages)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Publisher)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.FrontPage)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.DownloadUrl)
+                @Html.DisplayFor(modelItem => item.Title)
             </td>
+            <td>
             @if (item.AuthorId != null)
             {
             <td>
@@ -87,9 +65,26 @@
             </td>
             }
             <td>
+                @Html.DisplayFor(modelItem => item.YearPublished)
+            </td>
+            <td>
             @foreach (var genre in item.bookGenres)
             {
                <a asp-controller="Genres" asp-action="Details" asp-route-id="@genre.GenreId"> @genre.Genre.GenreName </a> <br/>
+            }
+            </td>
+            <td>
+            @if(item.Reviews != null){
+               float sr = 0;
+               var i  = 0;
+               @foreach (var review in item.Reviews){
+                   sr += review.Rating.Value;
+                   i++;                  
+               }
+               if (i!=0){
+                    sr = sr/i;
+                    @Html.DisplayFor(modelItem => sr)
+               }              
             }
             </td>
             <td>

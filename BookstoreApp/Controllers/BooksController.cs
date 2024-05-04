@@ -45,7 +45,7 @@ namespace BookstoreApp.Controllers
                 books = books.Where(s => s.AuthorId.Equals(bookAuthor));
             }
 
-            books = books.Include(b => b.Authors).Include(b => b.bookGenres).ThenInclude( b => b.Genre);
+            books = books.Include(b => b.Authors).Include(b=>b.Reviews).Include(b => b.bookGenres).ThenInclude( b => b.Genre);
 
             var bookGenreAuthorVM = new BookGenreAuthorViewModel
             {
@@ -67,6 +67,7 @@ namespace BookstoreApp.Controllers
 
             var book = await _context.Book
                 .Include(b => b.Authors)
+                .Include(b => b.Reviews)
                 .Include(b => b.bookGenres).ThenInclude(b => b.Genre)
                 .FirstOrDefaultAsync(b => b.Id == id);
             if (book == null)

@@ -22,6 +22,26 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.YearPublished)
         </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Reviews)
+        </dt>
+        <dd class="col-sm-10">
+            @if (Model.Reviews != null)
+            {
+                float sr = 0;
+                var i = 0;
+                @foreach (var review in Model.Reviews)
+                {
+                    sr += review.Rating.Value;
+                    i++;
+                }
+                if (i != 0)
+                {
+                    sr = sr / i;
+                    @Html.DisplayFor(modelItem => sr)
+                }
+            }
+        </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.NumPages)
         </dt>
