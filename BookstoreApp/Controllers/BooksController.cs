@@ -23,6 +23,7 @@ namespace BookstoreApp.Controllers
         public async Task<IActionResult> Index(int bookGenre, int bookAuthor, string searchString )
         {
             IQueryable<Book> books = _context.Book.AsQueryable();
+            IQueryable<BookGenre> bookGenres = _context.BookGenre.AsQueryable();
 
             var genres = _context.Genre.AsEnumerable();
             genres = genres.OrderBy(b => b.GenreName);
@@ -38,7 +39,9 @@ namespace BookstoreApp.Controllers
             }
             if (bookGenre != 0)
             {
-                books = books.Where(s => s.bookGenres.Equals(bookGenre));
+                //need to fix it
+                bookGenres = bookGenres.Where(s => s.GenreId == bookGenre);
+                books = books.Where(s => s.Id.Equals(bookGenres.First().BookId));
             }
             if (bookAuthor != 0)
             {
