@@ -40,7 +40,7 @@
                 @Html.DisplayFor(modelItem => item.Rating)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Book.Title)
+                <a asp-controller="Books" asp-action="Details" asp-route-id="@item.BookId"> @Html.DisplayFor(modelItem => item.Book.Title) </a>
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

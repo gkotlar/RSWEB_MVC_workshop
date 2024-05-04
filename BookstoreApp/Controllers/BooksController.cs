@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BookstoreApp.Models;
+using BookstoreApp.ViewModels;
 
 namespace BookstoreApp.Controllers
 {
@@ -19,10 +20,41 @@ namespace BookstoreApp.Controllers
         }
 
         // GET: Books
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int bookGenre, int bookAuthor, string searchString )
         {
-            var bookstoreAppContext = _context.Book.Include(b => b.Authors);
-            return View(await bookstoreAppContext.ToListAsync());
+            IQueryable<Book> books = _context.Book.AsQueryable();
+
+            var genres = _context.Genre.AsEnumerable();
+            genres = genres.OrderBy(b => b.GenreName);
+
+
+            var authors = _context.Author.AsEnumerable();
+            authors = authors.OrderBy(b => b.FullName);
+            //    IQueryable<string> genreQuery = _context.Book.OrderBy(m=>m.bookGenres).Select(m=>m.bookGenres).Distinct();
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                books = books.Where(s => s.Title.Contains(searchString));
+            }
+            if (bookGenre != 0)
+            {
+                books = books.Where(s => s.bookGenres.Equals(bookGenre));
+            }
+            if (bookAuthor != 0)
+            {
+                books = books.Where(s => s.AuthorId.Equals(bookAuthor));
+            }
+
+            books = books.Include(b => b.Authors).Include(b => b.bookGenres).ThenInclude( b => b.Genre);
+
+            var bookGenreAuthorVM = new BookGenreAuthorViewModel
+            {
+                Genres = new SelectList(genres, "Id", "GenreName"),
+                Authors = new SelectList(authors, "Id", "FullName"),
+                Books = await books.ToListAsync(),
+            };
+
+            return View(bookGenreAuthorVM);
         }
 
         // GET: Books/Details/5
@@ -35,7 +67,8 @@ namespace BookstoreApp.Controllers
 
             var book = await _context.Book
                 .Include(b => b.Authors)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .Include(b => b.bookGenres).ThenInclude(b => b.Genre)
+                .FirstOrDefaultAsync(b => b.Id == id);
             if (book == null)
             {
                 return NotFound();
@@ -47,7 +80,7 @@ namespace BookstoreApp.Controllers
         // GET: Books/Create
         public IActionResult Create()
         {
-            ViewData["AuthorId"] = new SelectList(_context.Author, "Id", "FirstName");
+            ViewData["AuthorId"] = new SelectList(_context.Author, "Id", "FullName");
             return View();
         }
 
@@ -64,7 +97,7 @@ namespace BookstoreApp.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["AuthorId"] = new SelectList(_context.Author, "Id", "FirstName", book.AuthorId);
+            ViewData["AuthorId"] = new SelectList(_context.Author, "Id", "FullName", book.AuthorId);
             return View(book);
         }
 
@@ -76,13 +109,25 @@ namespace BookstoreApp.Controllers
                 return NotFound();
             }
 
-            var book = await _context.Book.FindAsync(id);
+            var book = _context.Book.Where(b => b.Id == id).Include(b => b.bookGenres).First();
+
             if (book == null)
             {
                 return NotFound();
             }
-            ViewData["AuthorId"] = new SelectList(_context.Author, "Id", "FirstName", book.AuthorId);
-            return View(book);
+
+            var genres = _context.Genre.AsEnumerable();
+            genres = genres.OrderBy(b => b.GenreName);
+
+            BookGenresEditViewModel viewModel = new BookGenresEditViewModel
+            {
+                Book = book,
+                GenreList = new MultiSelectList(genres, "Id", "GenreName"),
+                SelectedGenres = book.bookGenres.Select(sg => sg.GenreId),
+            };
+
+            ViewData["AuthorId"] = new SelectList(_context.Author, "Id", "FullName", book.AuthorId);
+            return View(viewModel);
         }
 
         // POST: Books/Edit/5
@@ -90,9 +135,9 @@ namespace BookstoreApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,YearPublished,NumPages,Description,Publisher,FrontPage,DownloadUrl,AuthorId")] Book book)
+        public async Task<IActionResult> Edit(int id, BookGenresEditViewModel viewModel)
         {
-            if (id != book.Id)
+            if (id !=viewModel.Book.Id)
             {
                 return NotFound();
             }
@@ -101,12 +146,30 @@ namespace BookstoreApp.Controllers
             {
                 try
                 {
-                    _context.Update(book);
+                    _context.Update(viewModel.Book);
                     await _context.SaveChangesAsync();
+
+                    IEnumerable<int> newGenreList = viewModel.SelectedGenres;
+                    IEnumerable<int> previousGenreList = _context.BookGenre.Where(s => s.BookId == id).Select(s=>s.GenreId);
+                    IQueryable<BookGenre> toBeRemoved = _context.BookGenre.Where(s=>s.BookId == id);  
+                    if (newGenreList != null)
+                    {
+                        toBeRemoved = toBeRemoved.Where(s => !newGenreList.Contains(s.GenreId));
+                        foreach (int genreId in newGenreList)
+                        {
+                            if (!previousGenreList.Any(s => s == genreId))
+                            {
+                                _context.BookGenre.Add(new BookGenre { GenreId = genreId, BookId = id });
+                            }
+                        }
+                    }
+                    _context.BookGenre.RemoveRange(toBeRemoved);
+                    await _context.SaveChangesAsync();
+                     
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!BookExists(book.Id))
+                    if (!BookExists(viewModel.Book.Id))
                     {
                         return NotFound();
                     }
@@ -117,8 +180,8 @@ namespace BookstoreApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["AuthorId"] = new SelectList(_context.Author, "Id", "FirstName", book.AuthorId);
-            return View(book);
+            ViewData["AuthorId"] = new SelectList(_context.Author, "Id", "FullName", viewModel.Book.AuthorId);
+            return View(viewModel);
         }
 
         // GET: Books/Delete/5
@@ -131,7 +194,8 @@ namespace BookstoreApp.Controllers
 
             var book = await _context.Book
                 .Include(b => b.Authors)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .Include(b => b.bookGenres).ThenInclude(b => b.Genre)
+                .FirstOrDefaultAsync(b => b.Id == id);
             if (book == null)
             {
                 return NotFound();

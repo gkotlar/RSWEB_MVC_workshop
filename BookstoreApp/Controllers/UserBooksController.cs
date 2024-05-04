@@ -21,7 +21,8 @@ namespace BookstoreApp.Controllers
         // GET: UserBooks
         public async Task<IActionResult> Index()
         {
-            return View(await _context.UserBooks.ToListAsync());
+            var bookstoreAppContext = _context.UserBooks.Include(b => b.Book);
+            return View(await bookstoreAppContext.ToListAsync());
         }
 
         // GET: UserBooks/Details/5
@@ -33,6 +34,7 @@ namespace BookstoreApp.Controllers
             }
 
             var userBooks = await _context.UserBooks
+                .Include(b => b.Book)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (userBooks == null)
             {
@@ -45,6 +47,7 @@ namespace BookstoreApp.Controllers
         // GET: UserBooks/Create
         public IActionResult Create()
         {
+            ViewData["BookId"] = new SelectList(_context.Book, "Id", "Title");
             return View();
         }
 
@@ -61,6 +64,7 @@ namespace BookstoreApp.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["BookId"] = new SelectList(_context.Book, "Id", "Title", userBooks.BookId);
             return View(userBooks);
         }
 
@@ -77,6 +81,7 @@ namespace BookstoreApp.Controllers
             {
                 return NotFound();
             }
+            ViewData["BookId"] = new SelectList(_context.Book, "Id", "Title", userBooks.BookId);
             return View(userBooks);
         }
 
@@ -112,6 +117,7 @@ namespace BookstoreApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["BookId"] = new SelectList(_context.Book, "Id", "Title", userBooks.BookId);
             return View(userBooks);
         }
 
@@ -124,6 +130,7 @@ namespace BookstoreApp.Controllers
             }
 
             var userBooks = await _context.UserBooks
+                .Include(x => x.Book)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (userBooks == null)
             {

@@ -55,8 +55,20 @@
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Authors)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Authors.FirstName)
+        @if (Model.AuthorId != null)
+        {
+            <dd class="col-sm-10">
+                <a asp-controller="Authors" asp-action="Details" asp-route-id="@Model.AuthorId"> @Html.DisplayFor(model => model.Authors.FullName) </a>
+            </dd>
+        }
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.bookGenres)
+        </dt>
+        <dd class="col-sm-10">
+            @foreach (var genre in Model.bookGenres)
+            {
+                <a asp-controller="Genres" asp-action="Details" asp-route-id="@genre.GenreId"> @genre.Genre.GenreName </a> <br/>
+            }
         </dd>
     </dl>
 </div>

@@ -32,7 +32,7 @@
             @Html.DisplayNameFor(model => model.Book)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Book.Title)
+            <a asp-controller="Books" asp-action="Details" asp-route-id="@Model.BookId"> @Html.DisplayFor(model => model.Book.Title) </a>
         </dd>
     </dl>
 </div>
