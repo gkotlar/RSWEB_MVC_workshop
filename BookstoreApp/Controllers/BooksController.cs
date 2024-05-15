@@ -20,10 +20,13 @@ namespace BookstoreApp.Controllers
         }
 
         // GET: Books
-        public async Task<IActionResult> Index(int bookGenre, int bookAuthor, string searchString )
+        public async Task<IActionResult> Index(int? bookGenre, int? bookAuthor, string searchString )
         {
-            IQueryable<Book> books = _context.Book.AsQueryable();
-            IQueryable<BookGenre> bookGenres = _context.BookGenre.AsQueryable();
+            IQueryable<Book> books = _context.Book
+                .Include(b => b.Authors)
+                .Include(b => b.Reviews)
+                .Include(b => b.bookGenres)
+                .AsQueryable();
 
             var genres = _context.Genre.AsEnumerable();
             genres = genres.OrderBy(b => b.GenreName);
@@ -37,18 +40,14 @@ namespace BookstoreApp.Controllers
             {
                 books = books.Where(s => s.Title.Contains(searchString));
             }
-            if (bookGenre != 0)
+            if (bookGenre.HasValue)
             {
-                //need to fix it
-                bookGenres = bookGenres.Where(s => s.GenreId == bookGenre);
-                books = books.Where(s => s.Id.Equals(bookGenres.First().BookId));
+                books = books.Where(b=>b.bookGenres.Any(bg => bg.GenreId == bookGenre));
             }
-            if (bookAuthor != 0)
+            if (bookAuthor.HasValue)
             {
                 books = books.Where(s => s.AuthorId.Equals(bookAuthor));
-            }
-
-            books = books.Include(b => b.Authors).Include(b=>b.Reviews).Include(b => b.bookGenres).ThenInclude( b => b.Genre);
+            }                
 
             var bookGenreAuthorVM = new BookGenreAuthorViewModel
             {
@@ -82,10 +81,21 @@ namespace BookstoreApp.Controllers
         }
 
         // GET: Books/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             ViewData["AuthorId"] = new SelectList(_context.Author, "Id", "FullName");
-            return View();
+
+            var genres = await _context.Genre.OrderBy(b => b.GenreName).ToListAsync();
+
+            BookGenresEditViewModel viewModel = new BookGenresEditViewModel
+            {
+                Book = new Book(),
+                GenreList = new MultiSelectList(genres, "Id", "GenreName"),
+                SelectedGenres = new List<int>(),
+            };
+
+
+            return View(viewModel);
         }
 
         // POST: Books/Create
@@ -93,16 +103,38 @@ namespace BookstoreApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,YearPublished,NumPages,Description,Publisher,FrontPage,DownloadUrl,AuthorId")] Book book)
+        public async Task<IActionResult> Create(BookGenresEditViewModel viewModel)
         {
             if (ModelState.IsValid)
-            {
+            { 
+                Book book = new Book
+                {
+                    Title = viewModel.Book.Title,
+                    AuthorId = viewModel.Book.AuthorId,
+                    YearPublished = viewModel.Book.YearPublished,
+                    NumPages = viewModel.Book.NumPages,
+                    Description = viewModel.Book.Description,
+                    Publisher = viewModel.Book.Publisher,
+                };
                 _context.Add(book);
                 await _context.SaveChangesAsync();
+
+                if (viewModel.SelectedGenres != null)
+                {
+                    foreach (int genreId in viewModel.SelectedGenres)
+                    {
+                        _context.BookGenre.Add(new BookGenre { GenreId = genreId, BookId = book.Id });
+                    }
+                    await _context.SaveChangesAsync();
+                }
+
+                
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["AuthorId"] = new SelectList(_context.Author, "Id", "FullName", book.AuthorId);
-            return View(book);
+            ViewData["AuthorId"] = new SelectList(_context.Author, "Id", "FullName", viewModel.Book.AuthorId);
+            var genres = await _context.Genre.OrderBy(s => s.GenreName).ToListAsync();
+            viewModel.GenreList = new MultiSelectList(genres, "Id", "GenreName");
+            return View(viewModel);
         }
 
         // GET: Books/Edit/5

@@ -40,6 +40,7 @@ namespace BookstoreApp.Models
 
         public ICollection<Review>? Reviews { get; set; }
 
+        [Display(Name = "Genres")]
         public ICollection<BookGenre>? bookGenres { get; set; }
 
         public ICollection<UserBooks>? UserBooks { get;}
