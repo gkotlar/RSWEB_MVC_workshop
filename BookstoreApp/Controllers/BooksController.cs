@@ -181,7 +181,7 @@ namespace BookstoreApp.Controllers
                 if (!System.IO.Directory.Exists(uploadsFolder))
                     System.IO.Directory.CreateDirectory(uploadsFolder);
 
-                uniqueEBookName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(model.ElectronicVersion.FileName);
+                uniqueEBookName = Guid.NewGuid().ToString() + Path.GetExtension(model.ElectronicVersion.FileName);
 
                 string filePath = Path.Combine(uploadsFolder, uniqueEBookName);
 
@@ -238,6 +238,18 @@ namespace BookstoreApp.Controllers
             {
                 try
                 {
+                    if (viewModel.CoverPage != null)
+                    {
+                        string uploadedCoverPage = UploadedCoverPage(viewModel);
+                        viewModel.Book.FrontPage = uploadedCoverPage;
+                    }
+
+                    if (viewModel.ElectronicVersion != null)
+                    {
+                        string uploadedElectronicBook = UploadedElectronicBook(viewModel);
+                        viewModel.Book.DownloadUrl = uploadedElectronicBook;
+                    }
+
                     _context.Update(viewModel.Book);
                     await _context.SaveChangesAsync();
 
@@ -255,9 +267,10 @@ namespace BookstoreApp.Controllers
                             }
                         }
                     }
+
                     _context.BookGenre.RemoveRange(toBeRemoved);
                     await _context.SaveChangesAsync();
-                     
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
