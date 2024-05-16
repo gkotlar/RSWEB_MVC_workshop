@@ -9,6 +9,7 @@ using BookstoreApp.Models;
 using Microsoft.AspNetCore.Hosting;
 
 using BookstoreApp.ViewModels;
+using Microsoft.CodeAnalysis.Elfie.Serialization;
 
 namespace BookstoreApp.Controllers
 {
@@ -16,13 +17,13 @@ namespace BookstoreApp.Controllers
     {
         private readonly BookstoreAppContext _context;
 
-        private readonly Microsoft.AspNetCore.Hosting.IWebHostEnvironment webHostEnvironment;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
 
         public BooksController(BookstoreAppContext context, IWebHostEnvironment hostEnvironment)
         {
             _context = context;
-            webHostEnvironment = hostEnvironment;
+            _webHostEnvironment = hostEnvironment;
         }
 
         // GET: Books
@@ -153,9 +154,15 @@ namespace BookstoreApp.Controllers
 
             if (model.CoverPage != null)
             {
-                string uploadsFolder = Path.Combine(webHostEnvironment.WebRootPath, "BookCoverPages");
-                uniqueCoverPageName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(model.CoverPage.FileName);
+                string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "BookCoverPages");
+
+                if (!System.IO.Directory.Exists(uploadsFolder))
+                    System.IO.Directory.CreateDirectory(uploadsFolder);
+
+                uniqueCoverPageName = Guid.NewGuid().ToString() + Path.GetExtension(model.CoverPage.FileName);
+
                 string filePath = Path.Combine(uploadsFolder, uniqueCoverPageName);
+
                 using (var fileStream = new FileStream(filePath, FileMode.Create))
                 {
                     model.CoverPage.CopyTo(fileStream);
@@ -169,7 +176,7 @@ namespace BookstoreApp.Controllers
 
             if (model.ElectronicVersion != null)
             {
-                string uploadsFolder = Path.Combine(webHostEnvironment.WebRootPath, "BookDownloads");
+                string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "BookDownloads");
                 uniqueEBookName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(model.ElectronicVersion.FileName);
                 string filePath = Path.Combine(uploadsFolder, uniqueEBookName);
                 using (var fileStream = new FileStream(filePath, FileMode.Create))
