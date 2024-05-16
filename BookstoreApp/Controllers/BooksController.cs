@@ -177,8 +177,14 @@ namespace BookstoreApp.Controllers
             if (model.ElectronicVersion != null)
             {
                 string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "BookDownloads");
+
+                if (!System.IO.Directory.Exists(uploadsFolder))
+                    System.IO.Directory.CreateDirectory(uploadsFolder);
+
                 uniqueEBookName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(model.ElectronicVersion.FileName);
+
                 string filePath = Path.Combine(uploadsFolder, uniqueEBookName);
+
                 using (var fileStream = new FileStream(filePath, FileMode.Create))
                 {
                     model.CoverPage.CopyTo(fileStream);
