@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.IO;
 
+
 namespace BookstoreApp.Models;
 public class SeedData
 {
@@ -10,11 +11,12 @@ public class SeedData
             serviceProvider.GetRequiredService<
                 DbContextOptions<BookstoreAppContext>>()))
         {
-            // Look for any movies.
+            // Look for any books, authors, genres etc.
             if (context.Author.Any() || context.Book.Any() || context.BookGenre.Any() || context.Genre.Any() || context.Review.Any() || context.UserBooks.Any())
             {
                 return;   // DB has been seeded
             }
+
             context.Author.AddRange(
                 new Author 
                 { /*Id = 1, */
@@ -322,7 +324,7 @@ public class SeedData
                     Comment = "Vivamus non lorem vitae odio sagittis semper. Nam tempor diam dictum sapien. Aenean massa. Integer vitae nibh. Donec est mauris, rhoncus id, mollis nec, cursus a,",
                     Rating = 2
                 }
-            );
+             );
             context.SaveChanges();
 
             context.UserBooks.AddRange(
