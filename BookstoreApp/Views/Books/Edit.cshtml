@@ -13,36 +13,44 @@
         <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Book.Id" />
+
+
             <div class="form-group">
                 <label asp-for="Book.Title" class="control-label"></label>
                 <input asp-for="Book.Title" class="form-control" />
                 <span asp-validation-for="Book.Title" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="Book.YearPublished" class="control-label"></label>
                 <input asp-for="Book.YearPublished" class="form-control" />
                 <span asp-validation-for="Book.YearPublished" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="Book.NumPages" class="control-label"></label>
                 <input asp-for="Book.NumPages" class="form-control" />
                 <span asp-validation-for="Book.NumPages" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="Book.Description" class="control-label"></label>
                 <input asp-for="Book.Description" class="form-control" />
                 <span asp-validation-for="Book.Description" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="Book.Publisher" class="control-label"></label>
                 <input asp-for="Book.Publisher" class="form-control" />
                 <span asp-validation-for="Book.Publisher" class="text-danger"></span>
             </div>
+
+
             <div class="form-group">
                 <label asp-for="CoverPage" class="control-label"></label>
                 <div class="custom-file">
                     <input asp-for="CoverPage" class="form-control" id="CoverPage">
-                    <label class="custom-file-label" for="CoverPage">Choose file</label>
+                    <label class="custom-file-label" for="CoverPage">curr photo @Model.Book.FrontPage</label>
                 </div>
                 <span asp-validation-for="CoverPage" class="text-danger"></span>
             </div>
@@ -50,8 +58,8 @@
             <div class="form-group">
                 <label asp-for="ElectronicVersion" class="control-label"></label>
                 <div class="custom-file">
-                    <input asp-for="ElectronicVersion" class="form-control" id="ElectronicVersion">
-                    <label class="custom-file-label" for="ElectronicVersion">Choose file</label>
+                    <input asp-for="ElectronicVersion" class="form-control" id="ElectronicVersion" >
+                    <label class="custom-file-label" for="ElectronicVersion">Curr file @Model.Book.DownloadUrl</label>
                 </div>
                 <span asp-validation-for="ElectronicVersion" class="text-danger"></span>
             </div>
@@ -86,6 +94,9 @@
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
+
+
+
         </form>
     </div>
 </div>
