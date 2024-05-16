@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using BookstoreApp.Models;
-using BookstoreApp.Data;
+using BookstoreApp.Areas.Identity.Data;
 using Microsoft.AspNetCore.Identity;
 using BookstoreApp.Areas.Identity.Data;
 namespace BookstoreApp
