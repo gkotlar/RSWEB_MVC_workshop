@@ -26,8 +26,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Data\BookDownloads\" />
-    <Folder Include="Data\BookCoverPages\" />
+    <Folder Include="wwwroot\BookDownloads\" />
+    <Folder Include="wwwroot\BookCoverPages\" />
   </ItemGroup>
 
 </Project>

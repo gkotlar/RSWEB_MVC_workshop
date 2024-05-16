@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BookstoreApp.Models;
+using Microsoft.AspNetCore.Hosting;
+
 using BookstoreApp.ViewModels;
 
 namespace BookstoreApp.Controllers
@@ -14,9 +16,13 @@ namespace BookstoreApp.Controllers
     {
         private readonly BookstoreAppContext _context;
 
-        public BooksController(BookstoreAppContext context)
+        private readonly Microsoft.AspNetCore.Hosting.IWebHostEnvironment webHostEnvironment;
+
+
+        public BooksController(BookstoreAppContext context, IWebHostEnvironment hostEnvironment)
         {
             _context = context;
+            webHostEnvironment = hostEnvironment;
         }
 
         // GET: Books
@@ -106,7 +112,10 @@ namespace BookstoreApp.Controllers
         public async Task<IActionResult> Create(BookGenresEditViewModel viewModel)
         {
             if (ModelState.IsValid)
-            { 
+            {
+                string uploadedElectronicBook = UploadedElectronicBook(viewModel);
+                string uploadedCoverPage = UploadedCoverPage(viewModel);
+
                 Book book = new Book
                 {
                     Title = viewModel.Book.Title,
@@ -115,6 +124,8 @@ namespace BookstoreApp.Controllers
                     NumPages = viewModel.Book.NumPages,
                     Description = viewModel.Book.Description,
                     Publisher = viewModel.Book.Publisher,
+                    FrontPage = uploadedCoverPage,
+                    DownloadUrl = uploadedElectronicBook,
                 };
                 _context.Add(book);
                 await _context.SaveChangesAsync();
@@ -135,6 +146,38 @@ namespace BookstoreApp.Controllers
             var genres = await _context.Genre.OrderBy(s => s.GenreName).ToListAsync();
             viewModel.GenreList = new MultiSelectList(genres, "Id", "GenreName");
             return View(viewModel);
+        }
+        private string UploadedCoverPage(BookGenresEditViewModel model)
+        {
+            string uniqueCoverPageName = null;
+
+            if (model.CoverPage != null)
+            {
+                string uploadsFolder = Path.Combine(webHostEnvironment.WebRootPath, "BookCoverPages");
+                uniqueCoverPageName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(model.CoverPage.FileName);
+                string filePath = Path.Combine(uploadsFolder, uniqueCoverPageName);
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    model.CoverPage.CopyTo(fileStream);
+                }
+            }
+            return uniqueCoverPageName;
+        }
+        private string UploadedElectronicBook(BookGenresEditViewModel model)
+        {
+            string uniqueEBookName = null;
+
+            if (model.ElectronicVersion != null)
+            {
+                string uploadsFolder = Path.Combine(webHostEnvironment.WebRootPath, "BookDownloads");
+                uniqueEBookName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(model.ElectronicVersion.FileName);
+                string filePath = Path.Combine(uploadsFolder, uniqueEBookName);
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    model.CoverPage.CopyTo(fileStream);
+                }
+            }
+            return uniqueEBookName;
         }
 
         // GET: Books/Edit/5

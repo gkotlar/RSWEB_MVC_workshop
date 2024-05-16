@@ -25,6 +25,7 @@ namespace BookstoreApp
             }
 
             app.UseHttpsRedirection();
+
             app.UseStaticFiles();
 
             app.UseRouting();
