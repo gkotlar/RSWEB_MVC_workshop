@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Rewrite;
 
 namespace BookstoreApp.Areas.Identity.Pages.Account
 {
@@ -26,6 +27,7 @@ namespace BookstoreApp.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<BookstoreAppUser> _signInManager;
         private readonly UserManager<BookstoreAppUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IUserStore<BookstoreAppUser> _userStore;
         private readonly IUserEmailStore<BookstoreAppUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
@@ -33,12 +35,15 @@ namespace BookstoreApp.Areas.Identity.Pages.Account
 
         public RegisterModel(
             UserManager<BookstoreAppUser> userManager,
+            RoleManager<IdentityRole> roleManager,
             IUserStore<BookstoreAppUser> userStore,
             SignInManager<BookstoreAppUser> signInManager,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender)
+
         {
             _userManager = userManager;
+            _roleManager = roleManager;
             _userStore = userStore;
             _emailStore = GetEmailStore();
             _signInManager = signInManager;
@@ -117,11 +122,22 @@ namespace BookstoreApp.Areas.Identity.Pages.Account
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+
+                var roleCheck = _roleManager.RoleExistsAsync("User");
+                if (!await roleCheck)
+                {
+                    IdentityResult roleResult1;
+                    roleResult1 = await _roleManager.CreateAsync(new IdentityRole("User"));
+                }
+
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
                 {
+
                     _logger.LogInformation("User created a new account with password.");
+
+                    var roleResult2 = await _userManager.AddToRoleAsync(user, "User");
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -177,5 +193,6 @@ namespace BookstoreApp.Areas.Identity.Pages.Account
             }
             return (IUserEmailStore<BookstoreAppUser>)_userStore;
         }
+
     }
 }

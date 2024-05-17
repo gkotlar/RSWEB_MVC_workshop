@@ -4,10 +4,12 @@ using BookstoreApp.Models;
 using BookstoreApp.Areas.Identity.Data;
 using Microsoft.AspNetCore.Identity;
 using BookstoreApp.Areas.Identity.Data;
+using BookstoreApp.Areas.Identity.Pages.Account;
 namespace BookstoreApp
 {
     public class Program
     {
+      
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
@@ -19,6 +21,7 @@ namespace BookstoreApp
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
+
             builder.Services.AddRazorPages();
             builder.Services.AddIdentity<BookstoreAppUser, IdentityRole>().AddEntityFrameworkStores<BookstoreAppContext>().AddDefaultTokenProviders();
 
@@ -48,6 +51,7 @@ namespace BookstoreApp
                 options.User.RequireUniqueEmail = true;
             });
             //Setting the Account Login page
+            builder.Services.AddSingleton<IEmailSender, EmailSender>();
             builder.Services.ConfigureApplicationCookie(options =>
             {
                 // Cookie settings
@@ -58,6 +62,7 @@ namespace BookstoreApp
                 options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
                 options.SlidingExpiration = true;
             });
+
 
 
             var app = builder.Build();

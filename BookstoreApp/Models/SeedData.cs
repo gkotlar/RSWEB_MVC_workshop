@@ -11,20 +11,34 @@ public class SeedData
     {
         var RoleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
         var UserManager = serviceProvider.GetRequiredService<UserManager<BookstoreAppUser>>();
-        IdentityResult roleResult;
+        IdentityResult roleResult1;
+        IdentityResult roleResult2;
         //Add Admin Role
-        var roleCheck = await RoleManager.RoleExistsAsync("Admin");
-        if (!roleCheck) { roleResult = await RoleManager.CreateAsync(new IdentityRole("Admin")); }
-        BookstoreAppUser user = await UserManager.FindByEmailAsync("admin@admin.com");
-        if (user == null)
+        var roleCheck1 = await RoleManager.RoleExistsAsync("Admin");
+        var roleCheck2 = await RoleManager.RoleExistsAsync("User");
+        if (!roleCheck1) { roleResult1 = await RoleManager.CreateAsync(new IdentityRole("Admin")); }
+        if (!roleCheck2) { roleResult2 = await RoleManager.CreateAsync(new IdentityRole("User")); }
+        BookstoreAppUser user1 = await UserManager.FindByEmailAsync("admin@admin.com");
+        if (user1 == null)
         {
-            var User = new BookstoreAppUser();
-            User.Email = "admin@admin.com";
-            User.UserName = "admin@admin.com";
-            string userPWD = "Admin123";
-            IdentityResult chkUser = await UserManager.CreateAsync(User, userPWD);
+            var User1 = new BookstoreAppUser();
+            User1.Email = "admin@admin.com";
+            User1.UserName = "admin@admin.com";
+            string user1PWD = "Admin123";
+            IdentityResult chkUser1 = await UserManager.CreateAsync(User1, user1PWD);
             //Add default User to Role Admin 
-            if (chkUser.Succeeded) { var result1 = await UserManager.AddToRoleAsync(User, "Admin"); }
+            if (chkUser1.Succeeded) { var result1 = await UserManager.AddToRoleAsync(User1, "Admin"); }
+        }
+        BookstoreAppUser user2 = await UserManager.FindByEmailAsync("user@user.com");
+        if (user2 == null)
+        {
+            var User2 = new BookstoreAppUser();
+            User2.Email = "user@user.com";
+            User2.UserName = "user@user.com";
+            string user2PWD = "User1234";
+            IdentityResult chkUser2 = await UserManager.CreateAsync(User2, user2PWD);
+            //Add default User to Role Admin 
+            if (chkUser2.Succeeded) { var result1 = await UserManager.AddToRoleAsync(User2, "User"); }
         }
     }
     public static void Initialize(IServiceProvider serviceProvider)
@@ -111,7 +125,8 @@ public class SeedData
             context.SaveChanges();
 
             context.Book.AddRange(
-                new Book { /*Id = 1, */ 
+                new Book 
+                { /*Id = 1, */ 
                     Title = "Song Birds Tale", 
                     YearPublished = 2012, 
                     NumPages = 410, 
@@ -258,13 +273,13 @@ public class SeedData
                 new BookGenre {/*Id = 9 */ BookId = 9, GenreId = 1},
                 new BookGenre {/*Id = 10 */ BookId = 10, GenreId = 4 },
                 new BookGenre {/*Id = 11 */ BookId = 11, GenreId = 3 },
-                new BookGenre {/*Id = 12 */ BookId = 2, GenreId = 2 },
-                new BookGenre {/*Id = 13 */ BookId = 7, GenreId = 7 },
+                new BookGenre {/*Id = 12 */ BookId = 2, GenreId = 7 },
+                new BookGenre {/*Id = 13 */ BookId = 7, GenreId = 8 },
                 new BookGenre {/*Id = 14 */ BookId = 2, GenreId = 8 },
                 new BookGenre {/*Id = 15 */ BookId = 11, GenreId = 4 },
                 new BookGenre {/*Id = 16 */ BookId = 8, GenreId = 5 },
                 new BookGenre {/*Id = 17 */ BookId = 9, GenreId = 2 },
-                new BookGenre {/*Id = 18 */ BookId = 3, GenreId = 3 },
+                new BookGenre {/*Id = 18 */ BookId = 3, GenreId = 4 },
                 new BookGenre {/*Id = 19 */ BookId = 8, GenreId = 5 },
                 new BookGenre {/*Id = 20 */ BookId = 9, GenreId = 6 }
                 );
@@ -279,70 +294,70 @@ public class SeedData
                     Rating = 2
                 },
                 new Review
-                {
+                {/*Id = 2 */
                     BookId = 8,
                     AppUser = "/",
                     Comment = "conubia nostra, per inceptos hymenaeos. Mauris ut quam vel sapien imperdiet ornare. In faucibus. Morbi vehicula. Pellentesque tincidunt tempus risus. Donec egestas. Duis ac arcu. Nunc mauris. Morbi non sapien molestie orci tincidunt adipiscing. Mauris molestie pharetra nibh. Aliquam",
                     Rating = 2
                 },
                 new Review
-                {
+                {/*Id = 3 */
                     BookId = 2,
                     AppUser = "/",
                     Comment = "sagittis placerat. Cras dictum ultricies ligula. Nullam enim. Sed nulla ante, iaculis nec, eleifend non, dapibus rutrum, justo. Praesent luctus. Curabitur egestas nunc sed libero. Proin sed turpis nec mauris blandit mattis. Cras eget nisi dictum augue malesuada malesuada.",
                     Rating = 3
                 },
                 new Review
-                {
+                {/*Id = 4 */
                     BookId = 6,
                     AppUser = "/",
                     Comment = "nunc sit amet metus. Aliquam erat volutpat. Nulla facilisis. Suspendisse commodo tincidunt nibh. Phasellus nulla. Integer vulputate, risus a ultricies adipiscing, enim",
                     Rating = 2
                 },
                 new Review
-                {
+                {/*Id = 5 */
                     BookId = 10,
                     AppUser = "/",
                     Comment = "eleifend egestas. Sed pharetra, felis eget varius ultrices, mauris ipsum porta elit, a feugiat tellus lorem eu metus. In lorem. Donec elementum, lorem ut aliquam iaculis, lacus pede sagittis augue, eu tempor erat neque non quam. Pellentesque habitant morbi tristique senectus",
                     Rating = 3
                 },
                 new Review
-                {
+                {/*Id = 6 */
                     BookId = 3,
                     AppUser = "/",
                     Comment = "ultricies ligula. Nullam enim. Sed nulla ante, iaculis nec, eleifend non, dapibus rutrum, justo. Praesent luctus. Curabitur egestas nunc sed libero.",
                     Rating = 3
                 },
                 new Review
-                {
+                {/*Id = 7 */
                     BookId = 5,
                     AppUser = "/",
                     Comment = "eu neque pellentesque massa lobortis ultrices. Vivamus rhoncus. Donec est. Nunc ullamcorper, velit in aliquet lobortis, nisi nibh lacinia orci, consectetuer euismod est arcu ac orci. Ut semper pretium",
                     Rating = 1
                 },
                 new Review
-                {
+                {/*Id = 8 */
                     BookId = 2,
                     AppUser = "/",
                     Comment = "elit pede, malesuada vel, venenatis vel, faucibus id, libero. Donec consectetuer mauris id sapien. Cras dolor dolor, tempus non, lacinia at, iaculis quis, pede. Praesent eu dui. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Aenean eget",
                     Rating = 3
                 },
                 new Review
-                {
+                {/*Id = 9 */
                     BookId = 5,
                     AppUser = "/",
                     Comment = "Sed auctor odio a purus. Duis elementum, dui quis accumsan convallis, ante lectus convallis est, vitae sodales nisi magna sed dui. Fusce aliquam, enim nec",
                     Rating = 1
                 },
                 new Review
-                {
+                {/*Id = 10 */
                     BookId = 5,
                     AppUser = "/",
                     Comment = "Fusce aliquet magna a neque. Nullam ut nisi a odio semper cursus. Integer mollis. Integer tincidunt aliquam arcu. Aliquam ultrices iaculis odio. Nam interdum enim non nisi. Aenean eget metus. In nec orci. Donec nibh. Quisque nonummy ipsum non arcu. Vivamus sit amet risus. Donec",
                     Rating = 2
                 },
                 new Review
-                {
+                {/*Id = 11 */
                     BookId = 5,
                     AppUser = "/",
                     Comment = "Vivamus non lorem vitae odio sagittis semper. Nam tempor diam dictum sapien. Aenean massa. Integer vitae nibh. Donec est mauris, rhoncus id, mollis nec, cursus a,",
