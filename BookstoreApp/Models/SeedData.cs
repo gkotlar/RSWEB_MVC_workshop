@@ -15,7 +15,7 @@ public class SeedData
         //Add Admin Role
         var roleCheck = await RoleManager.RoleExistsAsync("Admin");
         if (!roleCheck) { roleResult = await RoleManager.CreateAsync(new IdentityRole("Admin")); }
-        BookstoreAppUser user = await UserManager.FindByEmailAsync("admin@mvcmovie.com");
+        BookstoreAppUser user = await UserManager.FindByEmailAsync("admin@admin.com");
         if (user == null)
         {
             var User = new BookstoreAppUser();
