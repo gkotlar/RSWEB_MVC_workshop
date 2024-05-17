@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BookstoreApp.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BookstoreApp.Controllers
 {
@@ -45,6 +46,7 @@ namespace BookstoreApp.Controllers
         }
 
         // GET: Reviews/Create
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             ViewData["BookId"] = new SelectList(_context.Book, "Id", "Title");
@@ -54,6 +56,7 @@ namespace BookstoreApp.Controllers
         // POST: Reviews/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,BookId,AppUser,Comment,Rating")] Review review)
@@ -69,6 +72,7 @@ namespace BookstoreApp.Controllers
         }
 
         // GET: Reviews/Edit/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -88,6 +92,7 @@ namespace BookstoreApp.Controllers
         // POST: Reviews/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,BookId,AppUser,Comment,Rating")] Review review)
@@ -122,6 +127,7 @@ namespace BookstoreApp.Controllers
         }
 
         // GET: Reviews/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -141,6 +147,7 @@ namespace BookstoreApp.Controllers
         }
 
         // POST: Reviews/Delete/5
+        [Authorize(Roles = "Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
