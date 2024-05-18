@@ -6,7 +6,7 @@
 
 <h1>Index</h1>
 
-@if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+@if (User.Identity.IsAuthenticated && (User.IsInRole("Admin") || User.IsInRole("User")))
 {
     <p>
         <a asp-action="Create">Create New</a>

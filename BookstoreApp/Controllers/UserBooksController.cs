@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BookstoreApp.Models;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace BookstoreApp.Controllers
 {
@@ -23,7 +24,13 @@ namespace BookstoreApp.Controllers
         public async Task<IActionResult> Index()
         {
             var bookstoreAppContext = _context.UserBooks.Include(b => b.Book);
+
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            ViewBag.UserID = userId;
+
             return View(await bookstoreAppContext.ToListAsync());
+
         }
 
         // GET: UserBooks/Details/5
@@ -56,7 +63,7 @@ namespace BookstoreApp.Controllers
         // POST: UserBooks/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, User")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,AppUser,BookId")] UserBooks userBooks)

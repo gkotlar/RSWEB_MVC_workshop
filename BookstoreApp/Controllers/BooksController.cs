@@ -11,6 +11,9 @@ using Microsoft.AspNetCore.Hosting;
 using BookstoreApp.ViewModels;
 using Microsoft.CodeAnalysis.Elfie.Serialization;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.General;
+using System.Security.Claims;
 
 namespace BookstoreApp.Controllers
 {
@@ -21,7 +24,8 @@ namespace BookstoreApp.Controllers
         private readonly IWebHostEnvironment _webHostEnvironment;
 
 
-        public BooksController(BookstoreAppContext context, IWebHostEnvironment hostEnvironment)
+
+        public BooksController(BookstoreAppContext context, IWebHostEnvironment hostEnvironment )
         {
             _context = context;
             _webHostEnvironment = hostEnvironment;
@@ -36,14 +40,15 @@ namespace BookstoreApp.Controllers
                 .Include(b => b.bookGenres)
                 .AsQueryable();
 
+            // get genres and auhors for the select list
             var genres = _context.Genre.AsEnumerable();
             genres = genres.OrderBy(b => b.GenreName);
-
 
             var authors = _context.Author.AsEnumerable();
             authors = authors.OrderBy(b => b.FullName);
             //    IQueryable<string> genreQuery = _context.Book.OrderBy(m=>m.bookGenres).Select(m=>m.bookGenres).Distinct();
-
+             
+            // query boos by title/genre/author
             if (!string.IsNullOrEmpty(searchString))
             {
                 books = books.Where(s => s.Title.Contains(searchString));
@@ -78,14 +83,24 @@ namespace BookstoreApp.Controllers
             var book = await _context.Book
                 .Include(b => b.Authors)
                 .Include(b => b.Reviews)
-                .Include(b => b.bookGenres).ThenInclude(b => b.Genre)
+                .Include(b => b.bookGenres)
+                .ThenInclude(bg => bg.Genre)
+                .Include(b => b.UserBooks)
                 .FirstOrDefaultAsync(b => b.Id == id);
             if (book == null)
             {
                 return NotFound();
             }
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            ViewBag.userId = userId;
 
-            return View(book);
+            BookReviewViewModel viewModel = new BookReviewViewModel
+            {
+                Books = book,
+                Reviews = new Review()
+            };
+
+            return View(viewModel);
         }
 
         // GET: Books/Create
@@ -150,50 +165,6 @@ namespace BookstoreApp.Controllers
             var genres = await _context.Genre.OrderBy(s => s.GenreName).ToListAsync();
             viewModel.GenreList = new MultiSelectList(genres, "Id", "GenreName");
             return View(viewModel);
-        }
-        private string UploadedCoverPage(BookGenresEditViewModel model)
-        {
-            string uniqueCoverPageName = null;
-
-            if (model.CoverPage != null)
-            {
-                string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "BookCoverPages");
-
-                if (!System.IO.Directory.Exists(uploadsFolder))
-                    System.IO.Directory.CreateDirectory(uploadsFolder);
-
-                uniqueCoverPageName = Guid.NewGuid().ToString() + Path.GetExtension(model.CoverPage.FileName);
-
-                string filePath = Path.Combine(uploadsFolder, uniqueCoverPageName);
-
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
-                {
-                    model.CoverPage.CopyTo(fileStream);
-                }
-            }
-            return uniqueCoverPageName;
-        }
-        private string UploadedElectronicBook(BookGenresEditViewModel model)
-        {
-            string uniqueEBookName = null;
-
-            if (model.ElectronicVersion != null)
-            {
-                string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "BookDownloads");
-
-                if (!System.IO.Directory.Exists(uploadsFolder))
-                    System.IO.Directory.CreateDirectory(uploadsFolder);
-
-                uniqueEBookName = Guid.NewGuid().ToString() + Path.GetExtension(model.ElectronicVersion.FileName);
-
-                string filePath = Path.Combine(uploadsFolder, uniqueEBookName);
-
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
-                {
-                    model.CoverPage.CopyTo(fileStream);
-                }
-            }
-            return uniqueEBookName;
         }
 
         // GET: Books/Edit/5
@@ -334,6 +305,55 @@ namespace BookstoreApp.Controllers
         private bool BookExists(int id)
         {
             return _context.Book.Any(e => e.Id == id);
+        }
+
+
+        // function to upload he picture to the pictures folder and return the unique file name
+        private string UploadedCoverPage(BookGenresEditViewModel model)
+        {
+            string uniqueCoverPageName = null;
+
+            if (model.CoverPage != null)
+            {
+                string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "BookCoverPages");
+
+                if (!System.IO.Directory.Exists(uploadsFolder))
+                    System.IO.Directory.CreateDirectory(uploadsFolder);
+
+                uniqueCoverPageName = Guid.NewGuid().ToString() + Path.GetExtension(model.CoverPage.FileName);
+
+                string filePath = Path.Combine(uploadsFolder, uniqueCoverPageName);
+
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    model.CoverPage.CopyTo(fileStream);
+                }
+            }
+            return uniqueCoverPageName;
+        }
+
+        // function to upload the Book PDF to the Files folder and return the unique file name
+        private string UploadedElectronicBook(BookGenresEditViewModel model)
+        {
+            string uniqueEBookName = null;
+
+            if (model.ElectronicVersion != null)
+            {
+                string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "BookDownloads");
+
+                if (!System.IO.Directory.Exists(uploadsFolder))
+                    System.IO.Directory.CreateDirectory(uploadsFolder);
+
+                uniqueEBookName = Guid.NewGuid().ToString() + Path.GetExtension(model.ElectronicVersion.FileName);
+
+                string filePath = Path.Combine(uploadsFolder, uniqueEBookName);
+
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    model.CoverPage.CopyTo(fileStream);
+                }
+            }
+            return uniqueEBookName;
         }
     }
 }

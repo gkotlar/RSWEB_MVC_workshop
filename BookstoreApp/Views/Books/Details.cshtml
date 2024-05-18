@@ -1,4 +1,4 @@
-﻿@model BookstoreApp.Models.Book
+﻿@model BookstoreApp.ViewModels.BookReviewViewModel;
 
 @{
     ViewData["Title"] = "Details";
@@ -11,135 +11,170 @@
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Title)
+            @Html.DisplayNameFor(model => model.Books.Title)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Title)
+            @Html.DisplayFor(model => model.Books.Title)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.YearPublished)
+            @Html.DisplayNameFor(model => model.Books.YearPublished)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.YearPublished)
+            @Html.DisplayFor(model => model.Books.YearPublished)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Reviews)
+            @Html.DisplayNameFor(model => model.Books.Reviews)
         </dt>
-        <dd class="col-sm-10">   
-            @Html.DisplayFor(model => model.Reviews.Count)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Books.getReviewsCount)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NumPages)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NumPages)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
+            @Html.DisplayNameFor(model => model.Books.NumPages)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
+            @Html.DisplayFor(model => model.Books.NumPages)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Publisher)
+            @Html.DisplayNameFor(model => model.Books.Description)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Publisher)
+            @Html.DisplayFor(model => model.Books.Description)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FrontPage)
+            @Html.DisplayNameFor(model => model.Books.Publisher)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Books.Publisher)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Books.FrontPage)
         </dt>
         <dd>
-        @if (Model.FrontPage != null)
+            @if (Model.Books.FrontPage != null)
         {
-            <img src="~/BookCOverPages/@Model.FrontPage"
+                <img src="~/BookCOverPages/@Model.Books.FrontPage"
                     class="rounded-circle"
                     height="40" width="40"
                     asp-append-version="true" />
         }
         </dd>
-        @if (User.Identity.IsAuthenticated && (User.IsInRole("User") || User.IsInRole("Admin")) )
+        @if (User.Identity.IsAuthenticated && ((User.IsInRole("User") && Model.Books.UserBooks.Any(ub => ub.AppUser == ViewBag.userId)) || User.IsInRole("Admin")))
         {
             <dt class = "col-sm-2">
-                @Html.DisplayNameFor(model => model.DownloadUrl)
+                @Html.DisplayNameFor(model => model.Books.DownloadUrl)
             </dt>
 
             <dd class = "col-sm-10">
                 <div class="form-group mt-3">
-                    <a href="~/BookDownloads/@Model.DownloadUrl" target="_blank" class="btn btn-outline-primary">Download</a>
-                    <span asp-validation-for="DownloadUrl" class="text-danger"></span>
+                    <a href="~/BookDownloads/@Model.Books.DownloadUrl" target="_blank" class="btn btn-outline-primary">Download</a>
+                    <span asp-validation-for="Books.DownloadUrl" class="text-danger"></span>
                 </div>
             </dd>      
         }
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Authors)
+            @Html.DisplayNameFor(model => model.Books.Authors)
         </dt>
-        @if (Model.AuthorId != null)
+        @if (Model.Books.AuthorId != null)
         {
             <dd class="col-sm-10">
-                <a asp-controller="Authors" asp-action="Details" asp-route-id="@Model.AuthorId"> @Html.DisplayFor(model => model.Authors.FullName) </a>
+                <a asp-controller="Authors" asp-action="Details" asp-route-id="@Model.Books.AuthorId"> @Html.DisplayFor(model => model.Books.Authors.FullName) </a>
             </dd>
         }
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.bookGenres)
+            @Html.DisplayNameFor(model => model.Books.bookGenres)
         </dt>
         <dd class="col-sm-10">
-            @foreach (var genre in Model.bookGenres)
+            @foreach (var genre in Model.Books.bookGenres)
             {
                 <a asp-controller="Genres" asp-action="Details" asp-route-id="@genre.GenreId"> @genre.Genre.GenreName </a> <br/>
             }
         </dd>
 
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Title)
+            @Html.DisplayNameFor(model => model.Books.Title)
         </dt>
         <dd class="col-sm-10">
-        @if ( Model.Reviews != null){
-            @foreach (var review in Model.Reviews)
+        @if ( Model.Reviews != null)
+        {
+                @foreach (var review in Model.Books.Reviews)
             {
                 <a asp-controller="Reviews" asp-action="Details" asp-route-id="@review.Id"> @review.AppUser says: @review.Comment </a> <br />
             }
         }
         </dd>
 
-        @if (User.Identity.IsAuthenticated && (User.IsInRole("User") || User.IsInRole("Admin")))
+        @if (User.Identity.IsAuthenticated && User.IsInRole("User"))
         {
-        <dt class="col-sm-2">
-            <h5>Add to cart:</h5>
-        </dt>
-
-       
-            <dd class="col-sm-10">
-                <div class="form-group mt-3">
-               <form asp-action="Create">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    @*<div class="form-group">
-                        <label asp-for="AppUser" class="control-label"></label>
-                        <input asp-for="AppUser" class="form-control" />
-                        <span asp-validation-for="AppUser" class="text-danger"></span>
+            @if (User.IsInRole("User") && !Model.Books.UserBooks.Any(ub => ub.AppUser == ViewBag.userId))
+            { 
+                <dd class="col-sm-10">
+                    <div class="form-group mt-3">
+                       <form asp-controller="UserBooks" asp-action="Create" method="post">
+                            <input type="hidden" name="BookId" value="@Model.Books.Id" />
+                           <input type="hidden" name="AppUser" value="@ViewBag.userId" />
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>              
+                            <div class="form-group">
+                                <input type="submit" value="Add to cart" class="btn btn-primary" />
+                            </div>
+                        </form>
                     </div>
-                    <div class="form-group">
-                        <label asp-for="BookId" class="control-label"></label>
-                        <select asp-for="BookId" class="form-control" asp-items="ViewBag.BookId">
-                            <option value="">Select</option>
-                        </select>
-                    </div>
-                    *@
-                    <div class="form-group">
-                        <input type="submit" value="Create" class="btn btn-primary" />
-                    </div>
-                </form>
-            </div>
-        </dd>
+                </dd>
+            }
+            else
+            {
+                @if (User.IsInRole("Admin"))
+                {
+                    <span> You are an admin <br /> </span>
+                }
+                <span> You already own this book </span>
+            }
+        }
+        else
+        {
+            <span>Log in to buy this book</span>
         }
 
 
     </dl>
 </div>
+
+<div>
+    <h4>Review</h4>
+    <hr />
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-controller="Reviews" asp-action="Create" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <input asp-for="Reviews.BookId" name="BookId" class="form-control" hidden value="@Model.Books.Id" />
+                    <span asp-validation-for="Reviews.BookId" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input asp-for="Reviews.AppUser" name="AppUser" class="form-control" hidden value="@ViewBag.UserId" />
+                    <span asp-validation-for="Reviews.AppUser" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Reviews.Comment" class="control-label"></label>
+                    <input asp-for="Reviews.Comment" name="Comment" class="form-control" />
+                    <span asp-validation-for="Reviews.Comment" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Reviews.Rating" class="control-label"></label>
+                    <input asp-for="Reviews.Rating" name="Rating" class="form-control" />
+                    <span asp-validation-for="Reviews.Rating" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Create" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <div>
     @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
     {
-        <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a>
+        <a asp-action="Edit" asp-route-id="@Model?Books.Id">Edit</a>
     }
     <a asp-action="Index">Back to List</a>
 </div>

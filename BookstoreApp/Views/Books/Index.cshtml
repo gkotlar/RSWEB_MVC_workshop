@@ -84,18 +84,15 @@
             }
             </td>
             <td>
-            @if(item.Reviews != null){
-               float sr = 0;
-               var i  = 0;
-               @foreach (var review in item.Reviews){
-                   sr += review.Rating.Value;
-                   i++;                  
-               }
-               if (i!=0){
-                    sr = sr/i;
-                    @Html.DisplayFor(modelItem => sr)
-               }              
+            @if(item.getReviewsCount != null)
+            {
+               <span>@item.getReviewsAverage</span>                      
             }
+            else
+            {
+               <span> No ratings left </span>
+            }
+            
             </td>
             <td>
                 @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))

@@ -25,6 +25,9 @@
     </thead>
     <tbody>
 @foreach (var item in Model) {
+
+    @if (item.AppUser == ViewBag.userId || User.IsInRole("Admin") )
+    {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.AppUser)
@@ -46,6 +49,7 @@
                 }
             </td>
         </tr>
+    }
 }
     </tbody>
 </table>
