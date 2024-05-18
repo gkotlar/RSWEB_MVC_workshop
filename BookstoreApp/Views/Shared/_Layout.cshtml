@@ -23,6 +23,7 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
+
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Books" asp-action="Index">Books</a>
                         </li>
@@ -32,16 +33,36 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Genres" asp-action="Index">Genres</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Reviews" asp-action="Index">Reviews</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="UserBooks" asp-action="Index">User Books</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="BookGenres" asp-action="Index">Book Genres</a>
-                        </li>
+
+                        @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="BookGenres" asp-action="Index">Book Genres</a>
+                            </li>
+                        }
+
+                        @if (User.Identity.IsAuthenticated && (User.IsInRole("Admin") || User.IsInRole("User")))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Reviews" asp-action="Index">Reviews</a>
+                            </li>
+                        }
+                    
                         
+                        @if (User.Identity.IsAuthenticated && (User.IsInRole("Admin") || User.IsInRole("User")))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="UserBooks" asp-action="Index">My Books</a>
+                            </li>
+                        }
+                        
+                        @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="BookGenres" asp-action="Index">Book Genres</a>
+                            </li>
+                        }
+                                            
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>

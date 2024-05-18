@@ -58,7 +58,7 @@
             <div class="form-group">
                 <label asp-for="ElectronicVersion" class="control-label"></label>
                 <div class="custom-file">
-                    <input asp-for="ElectronicVersion" class="form-control" id="ElectronicVersion" >
+                    <input asp-for="ElectronicVersion" type="file" class="form-control" name="ElectronicVersion" id="ElectronicVersion">
                     <label class="custom-file-label" for="ElectronicVersion">Curr file @Model.Book.DownloadUrl</label>
                 </div>
                 <span asp-validation-for="ElectronicVersion" class="text-danger"></span>

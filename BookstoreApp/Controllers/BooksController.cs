@@ -1,19 +1,22 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Diagnostics;
+using System.Security.Claims;
+
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using BookstoreApp.Models;
 using Microsoft.AspNetCore.Hosting;
-
-using BookstoreApp.ViewModels;
-using Microsoft.CodeAnalysis.Elfie.Serialization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.General;
-using System.Security.Claims;
+using Microsoft.CodeAnalysis.Elfie.Serialization;
+
+using BookstoreApp.Models;
+using BookstoreApp.ViewModels;
 
 namespace BookstoreApp.Controllers
 {
@@ -21,14 +24,17 @@ namespace BookstoreApp.Controllers
     {
         private readonly BookstoreAppContext _context;
 
+        private readonly ILogger<HomeController> _logger;
+
         private readonly IWebHostEnvironment _webHostEnvironment;
 
 
 
-        public BooksController(BookstoreAppContext context, IWebHostEnvironment hostEnvironment )
+        public BooksController(BookstoreAppContext context, ILogger<HomeController> logger, IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
-            _webHostEnvironment = hostEnvironment;
+            _logger = logger;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         // GET: Books
@@ -315,19 +321,22 @@ namespace BookstoreApp.Controllers
 
             if (model.CoverPage != null)
             {
-                string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "BookCoverPages");
+                string fileDir1 = Path.Combine(_webHostEnvironment.WebRootPath, @"BookCoverPages");
 
-                if (!System.IO.Directory.Exists(uploadsFolder))
-                    System.IO.Directory.CreateDirectory(uploadsFolder);
+                if (!System.IO.Directory.Exists(fileDir1))
+                    System.IO.Directory.CreateDirectory(fileDir1);
 
                 uniqueCoverPageName = Guid.NewGuid().ToString() + Path.GetExtension(model.CoverPage.FileName);
 
-                string filePath = Path.Combine(uploadsFolder, uniqueCoverPageName);
+                string filePath1 = Path.Combine(fileDir1, uniqueCoverPageName);
 
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                using (var fileStream1 = new FileStream(filePath1, FileMode.Create))
                 {
-                    model.CoverPage.CopyTo(fileStream);
+                    model.CoverPage.CopyTo(fileStream1);
                 }
+                string fileRelativeUrl1 = @"/BookCoverPages/" + uniqueCoverPageName;
+                uniqueCoverPageName = fileRelativeUrl1;
+
             }
             return uniqueCoverPageName;
         }
@@ -339,21 +348,29 @@ namespace BookstoreApp.Controllers
 
             if (model.ElectronicVersion != null)
             {
-                string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "BookDownloads");
+                string fileDir2 = Path.Combine(_webHostEnvironment.WebRootPath, @"BookDownloads");
 
-                if (!System.IO.Directory.Exists(uploadsFolder))
-                    System.IO.Directory.CreateDirectory(uploadsFolder);
+                if (!System.IO.Directory.Exists(fileDir2))
+                    System.IO.Directory.CreateDirectory(fileDir2);
 
                 uniqueEBookName = Guid.NewGuid().ToString() + Path.GetExtension(model.ElectronicVersion.FileName);
 
-                string filePath = Path.Combine(uploadsFolder, uniqueEBookName);
+                string filePath2 = Path.Combine(fileDir2, uniqueEBookName);
 
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                using (var fileStream2 = new FileStream(filePath2, FileMode.Create))
                 {
-                    model.CoverPage.CopyTo(fileStream);
+                    model.ElectronicVersion.CopyTo(fileStream2);
                 }
+                string fileRelativeUrl2 = @"/BookDownloads/" + uniqueEBookName;
+                uniqueEBookName = fileRelativeUrl2;
             }
             return uniqueEBookName;
+        }
+
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
+        {
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }
