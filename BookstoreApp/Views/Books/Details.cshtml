@@ -137,39 +137,42 @@
 
     </dl>
 </div>
-
-<div>
-    <h4>Review</h4>
-    <hr />
-    <div class="row">
-        <div class="col-md-4">
-            <form asp-controller="Reviews" asp-action="Create" method="post">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="form-group">
-                    <input asp-for="Reviews.BookId" name="BookId" class="form-control" hidden value="@Model.Books.Id" />
-                    <span asp-validation-for="Reviews.BookId" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <input asp-for="Reviews.AppUser" name="AppUser" class="form-control" hidden value="@ViewBag.UserId" />
-                    <span asp-validation-for="Reviews.AppUser" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Reviews.Comment" class="control-label"></label>
-                    <input asp-for="Reviews.Comment" name="Comment" class="form-control" />
-                    <span asp-validation-for="Reviews.Comment" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Reviews.Rating" class="control-label"></label>
-                    <input asp-for="Reviews.Rating" name="Rating" class="form-control" />
-                    <span asp-validation-for="Reviews.Rating" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <input type="submit" value="Create" class="btn btn-primary" />
-                </div>
-            </form>
+@if ((User.IsInRole("User") && Model.Books.UserBooks.Any(ub => ub.AppUser == ViewBag.userId)) || User.IsInRole("Admin") )
+{
+    <div>
+        <h4>Review</h4>
+        <hr />
+        <div class="row">
+            <div class="col-md-4">
+                <form asp-controller="Reviews" asp-action="Create" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <input asp-for="Reviews.BookId" name="BookId" class="form-control" hidden value="@Model.Books.Id" />
+                        <span asp-validation-for="Reviews.BookId" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input asp-for="Reviews.AppUser" name="AppUser" class="form-control" hidden value="@ViewBag.UserId" />
+                        <span asp-validation-for="Reviews.AppUser" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Reviews.Comment" class="control-label"></label>
+                        <input asp-for="Reviews.Comment" name="Comment" class="form-control" />
+                        <span asp-validation-for="Reviews.Comment" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Reviews.Rating" class="control-label"></label>
+                        <input asp-for="Reviews.Rating" name="Rating" class="form-control" />
+                        <span asp-validation-for="Reviews.Rating" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Create" class="btn btn-primary" />
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-</div>
+
+}
 
 <div>
     @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))

@@ -15,9 +15,12 @@
 <table class="table">
     <thead>
         <tr>
+            @if (User.IsInRole("Admin"))
+            {
             <th>
                 @Html.DisplayNameFor(model => model.AppUser)
             </th>
+            }
             <th>
                 @Html.DisplayNameFor(model => model.Comment)
             </th>
@@ -32,10 +35,15 @@
     </thead>
     <tbody>
 @foreach (var item in Model) {
+    @if (item.AppUser == ViewBag.userId || User.IsInRole("Admin") )
+    {
         <tr>
+            @if (User.IsInRole("Admin") )
+            {
             <td>
                 @Html.DisplayFor(modelItem => item.AppUser)
             </td>
+            }
             <td>
                 @Html.DisplayFor(modelItem => item.Comment)
             </td>
@@ -46,19 +54,20 @@
                 <a asp-controller="Books" asp-action="Details" asp-route-id="@item.BookId"> @Html.DisplayFor(modelItem => item.Book.Title) </a>
             </td>
             <td>
-                @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                @if (User.Identity.IsAuthenticated && (User.IsInRole("Admin") || (User.IsInRole("User") && item.AppUser == ViewBag.userId)))
                 {
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> 
                 }
 
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> 
 
-                @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                @if (User.Identity.IsAuthenticated && (User.IsInRole("Admin") || (User.IsInRole("User") && item.AppUser == ViewBag.userId)))
                 {
                     <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
                 }
             </td>
         </tr>
+    }
 }
     </tbody>
 </table>

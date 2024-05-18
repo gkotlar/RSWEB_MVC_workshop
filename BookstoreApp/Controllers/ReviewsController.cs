@@ -24,6 +24,10 @@ namespace BookstoreApp.Controllers
         public async Task<IActionResult> Index()
         {
             var bookstoreAppContext = _context.Review.Include(r => r.Book);
+
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            ViewBag.UserID = userId;
+
             return View(await bookstoreAppContext.ToListAsync());
         }
 
@@ -34,6 +38,8 @@ namespace BookstoreApp.Controllers
             {
                 return NotFound();
             }
+
+       
 
             var review = await _context.Review
                 .Include(r => r.Book)
@@ -52,7 +58,6 @@ namespace BookstoreApp.Controllers
         {
             //find curr userID
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
             ViewBag.UserID = userId;
 
             ViewData["BookId"] = new SelectList(_context.Book, "Id", "Title");
