@@ -3,14 +3,22 @@
 @{
     ViewData["Title"] = "Index";
 }
+<div class="jumbotron" style="text-align:center">
+    @if (User.Identity.IsAuthenticated && User.IsInRole("User"))
+    {
+        <h1>Your Books</h1>
+    }
 
-<h1>Index</h1>
-@if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
-{
-    <p>
-        <a asp-action="Create">Create New</a>
-    </p>
-}
+    @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+    {
+        <h1>List of Purchases</h1>
+
+        <p>
+            <a asp-action="Create">Create New</a>
+        </p>
+    }
+</div>
+
 <table class="table">
     <thead>
         <tr>
@@ -24,6 +32,16 @@
             <th>
                 @Html.DisplayNameFor(model => model.Book)
             </th>
+            @*
+            <th>
+                @Html.DisplayNameFor(model => model.Book.Authors)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.Book.bookGenres)
+            </th>
+            *@
+
             <th></th>
         </tr>
     </thead>
@@ -43,16 +61,32 @@
             <td>
                 <a asp-controller="Books" asp-action="Details" asp-route-id="@item.BookId"> @Html.DisplayFor(modelItem => item.Book.Title) </a>
             </td>
+            @*
+            <td>
+                @Html.DisplayFor(modelItem => item.Book.Authors)
+            </td>
+
+
+            <td>
+                @if (item.Book.bookGenres != null){
+                    @foreach (var genre in item.Book.bookGenres)
+                    {
+                        <a asp-controller="Genres" asp-action="Details" asp-route-id="@genre.GenreId" class="btn btn-outline-primary"> @genre.Genre.GenreName </a>
+                    }
+                }else{
+                    <span>No genres</span>
+                }
+                
+
+            </td>
+            *@
             <td>
                 @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
                 {
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> 
-                }
-
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a>
-
-                @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
-                {
+                
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+              
                     <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
                 }
             </td>

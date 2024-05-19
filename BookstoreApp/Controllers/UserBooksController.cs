@@ -29,6 +29,7 @@ namespace BookstoreApp.Controllers
 
             ViewBag.UserID = userId;
 
+
             return View(await bookstoreAppContext.ToListAsync());
 
         }
@@ -43,6 +44,7 @@ namespace BookstoreApp.Controllers
 
             var userBooks = await _context.UserBooks
                 .Include(b => b.Book)
+
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (userBooks == null)
             {
