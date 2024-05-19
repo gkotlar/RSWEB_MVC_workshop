@@ -223,13 +223,19 @@ namespace BookstoreApp.Controllers
                     if (viewModel.CoverPage != null)
                     {
                         string uploadedCoverPage = UploadedCoverPage(viewModel);
-                        viewModel.Book.FrontPage = uploadedCoverPage;
+                        if (uploadedCoverPage != null)
+                        {
+                            viewModel.Book.FrontPage = uploadedCoverPage;
+                        }
                     }
 
                     if (viewModel.ElectronicVersion != null)
                     {
                         string uploadedElectronicBook = UploadedElectronicBook(viewModel);
-                        viewModel.Book.DownloadUrl = uploadedElectronicBook;
+                        if (uploadedElectronicBook != null)
+                        {
+                            viewModel.Book.DownloadUrl = uploadedElectronicBook;
+                        }
                     }
 
                     _context.Update(viewModel.Book);

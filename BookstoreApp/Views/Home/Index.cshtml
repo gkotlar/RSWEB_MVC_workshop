@@ -2,15 +2,68 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="jumbotron">
-    <h1> adsz </h1>
-</div>
+<style>
 
-<div class="row">
+    .html {
+        margin: 0px;
+        height: 100%;
+        width: 100%;
+    }
 
-</div>
+    .body {
+        margin: 0px;
+        min-height: 100%;
+        width: 100%;
+        
+    }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+</style>
+
+<section class="container-fluid">
+
+
+    <div id="carouselExampleSlidesOnly" class="carousel slide"  data-bs-ride="carousel">
+        <div class="carousel-inner" style="height:400px">
+
+            <div class="carousel-item active">
+                <img src="~/Images/banner1.jpg" class="d-block w-100 mh-100" alt="...">
+            </div>
+            <div class="carousel-item">
+                <img src="~/Images/banner2.jpg" class="d-block w-100 mh-100" alt="...">
+            </div>
+            <div class="carousel-item">
+                <img src="~/Images/banner3.jpg" class="d-block w-100 mh-100" alt="...">
+            </div> 
+        </div>
+    </div>
+
+    <div class="jumbotron jumbotron-fluid" style="text-align:center">
+        <h1 class="display-4">Welcome to our Bookstore</h1>
+    </div>
+
+    <div class="row " style="padding:40px">
+        <div class="col-sm-4">
+            <div class="container" style="text-align:center">             
+                <p class="lead">To view our book collection click here:</p>
+                <a class="btn btn-danger" asp-area="" asp-controller="Books" asp-action="Index">Libliary</a>
+            </div>
+        </div>
+        
+        <div class="col-sm-4">
+            <div class="container" style="text-align:center">
+                <p class="lead">To view our authors click here:</p>
+                <a class="btn btn-danger" asp-area="" asp-controller="Authors" asp-action="Index">Authors</a>
+            </div>
+        </div>
+
+        <div class="col-sm-4">
+            <div class="container" style="text-align:center">
+                <p class="lead">To view the genres we offer click here:</p>
+                <a class="btn btn-danger" asp-area="" asp-controller="Genres" asp-action="Index">Genres</a>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+

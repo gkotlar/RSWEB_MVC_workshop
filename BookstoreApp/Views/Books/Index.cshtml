@@ -4,110 +4,132 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
-@if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
-{
-    <p>
-        <a asp-action="Create">Create New</a>
-    </p>
-}
+<div class="jumbotron jumbotron-fluid" style="text-align:center">
+    <div class="container">
+         
 
-<form aso-asp-controller="Books" asp-action="Index" method="get">
-    <p>
-        <select asp-for="BookGenre" asp-items="Model.Genres">
-            <option value="">All</option>
-        </select>
-        <select asp-for="BookAuthor" asp-items="Model.Authors">
-            <option value="">All</option>
-        </select>
-        Title: <input type= "text" asp-for="SearchString"/>
-        <input type="submit" value="Filter" />
-    </p>
-</form>
+        <div class="row">
+            <h1>Our Collection</h1>
+        </div>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Books[0].FrontPage)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Books[0].Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Books[0].Authors)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Books[0].YearPublished)
-            </th>     
-            <th>
-                @Html.DisplayNameFor(model => model.Books[0].bookGenres)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Books[0].Reviews)
-            </th>
+    
+        
 
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model.Books) {
-        <tr>
-            <td>
-                @if (item.FrontPage != null)
-                {
-                    <img src="~@item.FrontPage"
-                         class="rounded-circle"
-                         height="40" width="40"
-                         asp-append-version="true" />
-                }
-            </td>
+        @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+        {
+            <div class="row">     
+                <p>
+                    <a asp-action="Create" class="btn btn-warning">Create New</a>
+                </p>
+            </div>
+        }
 
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-            @if (item.AuthorId != null)
-            {
-            <td>
-               <a asp-controller="Authors" asp-action="Details" asp-route-id="@item.AuthorId"> @Html.DisplayFor(modelItem => item.Authors.FullName) </a>
-            </td>
-            }
-           
-            <td>
-                @Html.DisplayFor(modelItem => item.YearPublished)
-            </td>
-            <td>
-            @foreach (var genre in item.bookGenres)
-            {
-               <a asp-controller="Genres" asp-action="Details" asp-route-id="@genre.GenreId"> @genre.Genre.GenreName </a> <br/>
-            }
-            </td>
-            <td>
-            @if(item.getReviewsCount != null)
-            {
-               <span>@item.getReviewsAverage</span>                      
-            }
-            else
-            {
-               <span> No ratings left </span>
-            }
-            
-            </td>
-            <td>
-                @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
-                {
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> 
-                }
+        <div class="row">
+            <span>
+                Filter by:
+            </span>
+        </div>
 
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+        <form aso-asp-controller="Books" asp-action="Index" method="get" >
+            <div class="row" style="margin-bottom:30px">
+                    <div class="col">
+                        <p> Genres:</p>
 
-                @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
-                {
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                }
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+                        <select asp-for="BookGenre" asp-items="Model.Genres">
+                            <option value="">All</option>
+                        </select>
+                    </div>
+
+                    <div class="col">
+                        <p>Authors:</p>
+                        <select asp-for="BookAuthor" asp-items="Model.Authors">
+                            <option value="">All</option>
+                        </select>
+                    </div>
+
+                    <div class="col">
+                        <p>Title:</p>
+                        <input type= "text" asp-for="SearchString"/>     
+                    </div>  
+            </div>
+        
+            <div class="row" style="margin-bottom:30px">
+                <input class="btn btn-outline-primary" type="submit" value="Filter" />
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div class = "row">
+        @foreach (var item in Model.Books)
+        {
+            <div class="col-lg-3 col-md-4 col-6" style="margin-bottom:10px;">
+                <div class="card-deck">
+                    <div class="card" style="width: 18rem; text-align:center">
+                        <div class = "card-img">
+                            @if (item.FrontPage != null)
+                            {
+                                <img src="~@item.FrontPage" class="card-img-top" alt="..." height="200" asp-append-version="true">
+                            }
+                            else
+                            {
+                                <img src="~/Images/banner1.jpg" class="card-img-top" alt="..." height="200">
+                            }
+                        </div>
+
+                        <div class="card-body">
+                            <h5 class="card-title">@Html.DisplayFor(modelItem => item.Title)</h5>
+
+                            @if (item.AuthorId != null)
+                            {
+                                <p class="card-text">
+                                    <a asp-controller="Authors" asp-action="Details" asp-route-id="@item.AuthorId"> @Html.DisplayFor(modelItem => item.Authors.FullName) </a>
+                                </p>
+                            }
+
+                            <p class="card-text">
+                                @Html.DisplayFor(modelItem => item.YearPublished)
+                            </p>
+
+                            @if (item.getReviewsCount != null)
+                            {
+                                <p class="card-text">Rating: @item.getReviewsAverage</p>
+                            }
+                            else
+                            {
+                                <p class="card-text"> No ratings left </p>
+                            }
+
+                        </div>
+
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                @foreach (var genre in item.bookGenres)
+                                {
+                                    <a asp-controller="Genres" asp-action="Details" asp-route-id="@genre.GenreId" class="btn btn-outline-primary"> @genre.Genre.GenreName </a>
+                                }
+                            </li>
+                        </ul>
+
+                   
+                        <div class="card-footer">
+                            @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                            {
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning">Edit</a>
+                            }
+
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-success">Details</a>
+
+                            @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                            {
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

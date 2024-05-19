@@ -4,8 +4,9 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
-
+<div style="text-align:center">
+    <h1>Genre List</h1>
+</div>
 @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
 {
     <p>
