@@ -28,7 +28,9 @@
             </div>
             <div class="form-group">
                 <label asp-for="Rating" class="control-label"></label>
-                <input asp-for="Rating" class="form-control" />
+                <input asp-for="Rating" class="form-control" type="range" min="1" max="5" step="1" />
+                <span style="float:left">1</span>
+                <span style="float:right">5</span>
                 <span asp-validation-for="Rating" class="text-danger"></span>
             </div>
             <div class="form-group">
