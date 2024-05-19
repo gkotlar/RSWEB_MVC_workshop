@@ -4,14 +4,24 @@
     ViewData["Title"] = "Index";
 }
 <div class="jumbotron" style="text-align:center">
-    <h1>Your reviews</h1>
+    
 
     @if (User.Identity.IsAuthenticated && (User.IsInRole("Admin") || User.IsInRole("User")))
     {
+        @if (User.IsInRole("Admin"))
+        {
+            <h1>All reviews</h1>
+        }
+        else
+        {
+            <h1>Your reviews</h1>
+        }
+
         <p>
             <a asp-action="Create">Create New</a>
         </p>
     }
+
 </div>
 <table class="table">
     <thead>
