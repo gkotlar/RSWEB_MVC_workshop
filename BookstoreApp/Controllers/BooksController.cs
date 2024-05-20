@@ -211,7 +211,7 @@ namespace BookstoreApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, BookGenresEditViewModel viewModel)
         {
-            if (id !=viewModel.Book.Id)
+            if (id != viewModel.Book.Id)
             {
                 return NotFound();
             }
@@ -220,22 +220,26 @@ namespace BookstoreApp.Controllers
             {
                 try
                 {
+     
                     if (viewModel.CoverPage != null)
                     {
                         string uploadedCoverPage = UploadedCoverPage(viewModel);
-                        if (uploadedCoverPage != null)
+                        if (uploadedCoverPage != "")
                         {
                             viewModel.Book.FrontPage = uploadedCoverPage;
                         }
+                       
                     }
+                   
 
                     if (viewModel.ElectronicVersion != null)
                     {
                         string uploadedElectronicBook = UploadedElectronicBook(viewModel);
-                        if (uploadedElectronicBook != null)
+                        if (uploadedElectronicBook != "")
                         {
                             viewModel.Book.DownloadUrl = uploadedElectronicBook;
                         }
+                       
                     }
 
                     _context.Update(viewModel.Book);
@@ -323,7 +327,7 @@ namespace BookstoreApp.Controllers
         // function to upload he picture to the pictures folder and return the unique file name
         private string UploadedCoverPage(BookGenresEditViewModel model)
         {
-            string uniqueCoverPageName = null;
+            string uniqueCoverPageName = "";
 
             if (model.CoverPage != null)
             {
@@ -344,13 +348,14 @@ namespace BookstoreApp.Controllers
                 uniqueCoverPageName = fileRelativeUrl1;
 
             }
+           
             return uniqueCoverPageName;
         }
 
         // function to upload the Book PDF to the Files folder and return the unique file name
         private string UploadedElectronicBook(BookGenresEditViewModel model)
         {
-            string uniqueEBookName = null;
+            string uniqueEBookName = "";
 
             if (model.ElectronicVersion != null)
             {
@@ -370,6 +375,7 @@ namespace BookstoreApp.Controllers
                 string fileRelativeUrl2 = @"/BookDownloads/" + uniqueEBookName;
                 uniqueEBookName = fileRelativeUrl2;
             }
+            
             return uniqueEBookName;
         }
 
