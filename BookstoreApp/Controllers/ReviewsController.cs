@@ -83,7 +83,7 @@ namespace BookstoreApp.Controllers
         }
 
         // GET: Reviews/Edit/5
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, User")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -103,7 +103,7 @@ namespace BookstoreApp.Controllers
         // POST: Reviews/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, User")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,BookId,AppUser,Comment,Rating")] Review review)
@@ -138,7 +138,7 @@ namespace BookstoreApp.Controllers
         }
 
         // GET: Reviews/Delete/5
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, User")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -158,7 +158,7 @@ namespace BookstoreApp.Controllers
         }
 
         // POST: Reviews/Delete/5
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, User")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

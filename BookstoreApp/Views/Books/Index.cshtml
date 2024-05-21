@@ -65,7 +65,7 @@
     <div class = "row">
         @foreach (var item in Model.Books)
         {
-            <div class="col-lg-3 col-md-4 col-6" style="margin-bottom:10px;">
+            <div class="col-xl-3 col-lg-4 col-md-6 col-6" style="margin-bottom:10px;">
                 <div class="card-deck">
                     <div class="card" style="width: 18rem; text-align:center">
                         <div class = "card-img">
@@ -80,7 +80,7 @@
                         </div>
 
                         <div class="card-body">
-                            <h5 class="card-title">@Html.DisplayFor(modelItem => item.Title)</h5>
+                            <h5 class="card-title" style="height:100px; overflow:auto">@Html.DisplayFor(modelItem => item.Title)</h5>
 
                             @if (item.AuthorId != null)
                             {
@@ -104,7 +104,7 @@
 
                         </div>
 
-                        <ul class="list-group list-group-flush">
+                        <ul class="list-group list-group-flush" style= "height:55px; overflow:auto">
                             <li class="list-group-item">
                                 @foreach (var genre in item.bookGenres)
                                 {

@@ -41,27 +41,30 @@
         <h1 class="display-4">Welcome to our Bookstore</h1>
     </div>
 
-    <div class="row " style="padding:40px">
-        <div class="col-sm-4">
-            <div class="container" style="text-align:center">             
-                <p class="lead">To view our book collection click here:</p>
-                <a class="btn btn-danger" asp-area="" asp-controller="Books" asp-action="Index">Libliary</a>
+    <div class="row" style="padding:40px">
+        <div class="col-md-4 col-sm-12">
+                <div class="container" style="text-align:center">             
+                    <p class="lead">To view our book collection click here:</p>
+                    <a class="btn btn-danger" asp-area="" asp-controller="Books" asp-action="Index">Libliary</a>
+                    <br />
+                </div>
             </div>
-        </div>
-        
-        <div class="col-sm-4">
-            <div class="container" style="text-align:center">
-                <p class="lead">To view our authors click here:</p>
-                <a class="btn btn-danger" asp-area="" asp-controller="Authors" asp-action="Index">Authors</a>
-            </div>
-        </div>
 
-        <div class="col-sm-4">
+        <div class="col-md-4 col-sm-12">
+                <div class="container" style="text-align:center">
+                    <p class="lead">To view our authors click here:</p>
+                    <a class="btn btn-danger" asp-area="" asp-controller="Authors" asp-action="Index">Authors</a>
+                    <br />
+                </div>
+            </div>
+
+        <div class="col-md-4 col-sm-12">
             <div class="container" style="text-align:center">
                 <p class="lead">To view the genres we offer click here:</p>
                 <a class="btn btn-danger" asp-area="" asp-controller="Genres" asp-action="Index">Genres</a>
+                <br />
             </div>
-        </div>
+         </div>
     </div>
 
 </section>

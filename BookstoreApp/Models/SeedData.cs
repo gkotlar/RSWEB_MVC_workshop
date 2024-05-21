@@ -155,7 +155,7 @@ public class SeedData
                     Title = "Les quatre filles du docteur March",
                     YearPublished = 2004,
                     NumPages = 344,
-                    Description = "",
+                    Description = "zexrdcfvgbhjnkml",
                     Publisher = "Mi Ac Corp.",
                     FrontPage = "/BookCoverPages/0012143522-L.jpg",
                     DownloadUrl = "/BookCoverPages/0012143522-L.jpg",
